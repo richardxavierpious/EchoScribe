@@ -19,8 +19,9 @@ function CustomAudioUploader() {
         id="audio-upload"
         style={{ display: 'none' }} // Hide the default file input
       />
-      <label htmlFor="audio-upload" style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
-        {audioFile ? 'Change Audio File' : 'Select an Audio File'}
+
+      <label htmlFor="audio-upload" style={{ cursor: 'pointer' }} className='bg-blue-700 rounded-sm p-2'>
+        {audioFile ? 'Change Audio File' : 'Upload Audio File'}
       </label>
       {audioFile && (
         <div>
