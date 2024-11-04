@@ -3,9 +3,9 @@ import AudioUploader from './audiouploader'
 
 function Hero() {
   return (
-    <div style={{padding: "10px"}}>
+    <div className='p-5 display-flex'>
 
-    <AudioUploader/>
+      <AudioUploader/>
         
     </div>
   )
