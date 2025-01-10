@@ -16,5 +16,7 @@ A powerful tool that takes an audio recording as input, converts it to text usin
 ## Authors
 
 Ananth Arul
+
 Eric Mathew
+
 Richard Xavier Pious
