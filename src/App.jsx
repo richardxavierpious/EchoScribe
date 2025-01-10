@@ -1,6 +1,5 @@
 // Import necessary React dependencies
-import React, { useState } from 'react';
-import './App.css'; // Optional: Add styles for your components
+import React, { useState } from 'react'; // Optional: Add styles for your components
 
 function App() {
   const [conversation, setConversation] = useState('');
