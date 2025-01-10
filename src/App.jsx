@@ -6,7 +6,7 @@ function App() {
 
   return (
     <div className="App" style={styles.container}>
-      <h1 style={styles.heading}>Conversation Summarizer</h1>
+      <h1 style={styles.heading}>EchoScribe</h1>
 
       {/* Text Area for Conversation Input */}
       <textarea
