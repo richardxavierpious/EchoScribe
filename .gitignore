@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 transcription/config.py
-Azure Functions/config.py
+Azure\ Functions/config.py
