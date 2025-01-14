@@ -6,7 +6,6 @@ aai.settings.api_key = API_KEY
 
 transcriber = aai.Transcriber()
 
-
 audio_file = "C:\\Users\\richa\\OneDrive\\Desktop\\Repos\\EchoScribe\\transcription\\test1.mp3"
 
 
