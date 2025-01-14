@@ -3,6 +3,7 @@ from config import API_KEY
 
 aai.settings.api_key = API_KEY
 
+
 transcriber = aai.Transcriber()
 
 
