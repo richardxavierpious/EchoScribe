@@ -1,0 +1,2 @@
+azure-functions==1.21.3  # Update to the latest version available
+requests==2.25.1  # Update to the latest version available

@@ -1,8 +1,29 @@
-// Import necessary React dependencies
-import React, { useState } from 'react'; // Optional: Add styles for your components
+import React, { useState } from 'react';
 
 function App() {
   const [conversation, setConversation] = useState('');
+  const [summary, setSummary] = useState('');
+
+  const handleSummarize = async () => {
+    try {
+      const response = await fetch('http://localhost:7071/api/summarize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ conversation }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.text(); // Get response as text
+      setSummary(data); // Set the summary directly
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
     <div className="App" style={styles.container}>
@@ -19,10 +40,18 @@ function App() {
       {/* Summarize Button */}
       <button
         style={styles.button}
-        onClick={() => alert('Summarize functionality coming soon!')} // Placeholder for functionality
+        onClick={handleSummarize}
       >
         Summarize
       </button>
+
+      {/* Display Summary */}
+      {summary && (
+        <div style={styles.summary}>
+          <h2>Summary</h2>
+          <p>{summary}</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -62,6 +91,10 @@ const styles = {
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
+  },
+  summary: {
+    marginTop: '20px',
+    textAlign: 'center',
   },
 };
 
