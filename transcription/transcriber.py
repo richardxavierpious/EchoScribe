@@ -10,7 +10,7 @@ audio_file = "C:\\Users\\ericm\\OneDrive\\Documents\\Eric\\S8 Main Project\\Proj
 
 
 config = aai.TranscriptionConfig(speaker_labels=True, speakers_expected=3)
-
+    
 transcript = transcriber.transcribe(audio_file, config)
 
 if transcript.status == aai.TranscriptStatus.error:
