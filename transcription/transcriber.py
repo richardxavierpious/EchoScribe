@@ -6,7 +6,7 @@ aai.settings.api_key = API_KEY
 
 transcriber = aai.Transcriber()
 
-audio_file = "C:\\Users\\ericm\\OneDrive\\Documents\\Eric\\S8 Main Project\\Project Code Main\\EchoScribe\\transcription\\test1.mp3"
+audio_file = "transcription\\test1.mp3"
 
 
 config = aai.TranscriptionConfig(speaker_labels=True, speakers_expected=3)
