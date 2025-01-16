@@ -25,3 +25,4 @@ dist-ssr
 
 transcription/config.py
 Azure\ Functions/config.py
+venv/
