@@ -24,5 +24,6 @@ dist-ssr
 *.sw?
 
 transcription/config.py
+transcription/testing_data/
 Azure\ Functions/config.py
 venv/
