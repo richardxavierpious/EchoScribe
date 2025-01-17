@@ -6,10 +6,10 @@ aai.settings.api_key = API_KEY
 
 transcriber = aai.Transcriber()
 
-audio_file = "transcription\\test1.mp3"
+audio_file = "transcription\\testing_data\\test3.mp3"
 
 
-config = aai.TranscriptionConfig(speaker_labels=True, speakers_expected=3)
+config = aai.TranscriptionConfig(speaker_labels=True)
 
 transcript = transcriber.transcribe(audio_file, config)
 
@@ -17,7 +17,6 @@ if transcript.status == aai.TranscriptStatus.error:
     print(f"Transcription failed: {transcript.error}")
     exit(1)
 
-print(transcript.text)
 
 for utterance in transcript.utterances:
     print(f"Speaker {utterance.speaker}: {utterance.text}")
