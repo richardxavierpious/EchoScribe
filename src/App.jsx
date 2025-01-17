@@ -72,7 +72,7 @@ function App() {
         id="fileInput"
       />
       <label htmlFor="fileInput" style={styles.button}>
-        Browse
+        Upload Audio
       </label>
 
       {/* Display Selected File Name */}
@@ -80,7 +80,7 @@ function App() {
 
       {/* Upload Button */}
       <button style={styles.button} onClick={handleUpload}>
-        Upload Audio
+        Generate Transcript
       </button>      
 
       {/* Text Area for Conversation Input */}
