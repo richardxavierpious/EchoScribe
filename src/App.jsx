@@ -12,9 +12,9 @@ function App() {
     setFileName(file ? file.name : '');
   };
 
-  const handleUpload = async () => {
+  const handleTranscribe = async () => {
     if (!audioFile) {
-      alert('Please select an audio file to upload.');
+      alert('Please select an audio file to transcribe.');
       return;
     }
 
@@ -22,9 +22,14 @@ function App() {
     formData.append('file', audioFile);
 
     try {
-      const response = await fetch('http://localhost:7071/api/upload', {
+      const response = await fetch('http://localhost:5000/transcribe', {
         method: 'POST',
         body: formData,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
       });
 
       if (!response.ok) {
@@ -32,7 +37,7 @@ function App() {
       }
 
       const data = await response.json();
-      alert('File uploaded successfully!');
+      setConversation(data.transcript);  // Set the transcription output in the text area
     } catch (error) {
       console.error('Error:', error);
     }
@@ -72,16 +77,16 @@ function App() {
         id="fileInput"
       />
       <label htmlFor="fileInput" style={styles.button}>
-        Upload Audio
+        Browse
       </label>
 
       {/* Display Selected File Name */}
       {fileName && <p style={styles.fileName}>Selected Audio File:  {fileName}</p>}
 
-      {/* Upload Button */}
-      <button style={styles.button} onClick={handleUpload}>
+      {/* Generate Transcript Button */}
+      <button style={styles.button} onClick={handleTranscribe}>
         Generate Transcript
-      </button>      
+      </button>
 
       {/* Text Area for Conversation Input */}
       <textarea
