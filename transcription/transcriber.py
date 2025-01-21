@@ -6,7 +6,7 @@ aai.settings.api_key = API_KEY
 
 transcriber = aai.Transcriber()
 
-audio_file = "transcription\\testing_data\\test3.mp3"
+audio_file = "transcription\\testing_data\\websites.mp3"
 
 
 config = aai.TranscriptionConfig(speaker_labels=True)
