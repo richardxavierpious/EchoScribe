@@ -24,23 +24,18 @@ def transcribe():
         file_path = os.path.join(tmpdirname, file.filename)
         file.save(file_path)
 
-    transcriber = aai.Transcriber()
+        transcriber = aai.Transcriber()
+        config = aai.TranscriptionConfig(speaker_labels=True, speakers_expected=3)
+        transcript = transcriber.transcribe(file_path, config)
 
-    audio_file = "transcription\\testing_data\\websites.mp3"
+        if transcript.status == aai.TranscriptStatus.error:
+            logging.error(f"Transcription failed: {transcript.error}")
+            return jsonify({'error': f"Transcription failed: {transcript.error}"}), 500
 
-
-    config = aai.TranscriptionConfig(speaker_labels=True)
-
-    transcript = transcriber.transcribe(audio_file, config)
-
-    if transcript.status == aai.TranscriptStatus.error:
-        logging.error(f"Transcription failed: {transcript.error}")
-        return jsonify({'error': f"Transcription failed: {transcript.error}"}), 500
-
-            # Format the transcript with speaker labels
-    formatted_transcript = ""
-    for utterance in transcript.utterances:
-        formatted_transcript += f"Speaker {utterance.speaker}: {utterance.text}\n"
+        # Format the transcript with speaker labels
+        formatted_transcript = ""
+        for utterance in transcript.utterances:
+            formatted_transcript += f"Speaker {utterance.speaker}: {utterance.text}\n"
 
         return jsonify({'transcript': formatted_transcript})
 

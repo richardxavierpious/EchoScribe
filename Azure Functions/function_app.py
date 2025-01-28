@@ -54,14 +54,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             "messages": [
                 {
                     "role": "system",
-                    "content": "You are a helpful assistant that summarizes conversations."
+                    "content": "You are a helpful assistant that generates an executive summary of a conversation , basically only include the most important takeaways ."
                 },
                 {
                     "role": "user",
                     "content": f"Summarize the following text:\n\n{conversation}"
                 }
             ],
-            "max_tokens": 200,
+            "max_tokens": 150,
             "temperature": 0.7
         }
 
