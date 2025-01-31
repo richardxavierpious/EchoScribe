@@ -13,6 +13,12 @@ A powerful tool that takes an audio recording as input, converts it to text usin
    ```bash
    git clone https://github.com/richardxavierpious/EchoScribe.git
 
+2. To get all the servers running, run the following in the terminal:
+```
+   py ./transcription/transcriber.py
+   npm run dev
+   func start --script-root "Azure Functions"
+```
 ## Authors
 
 Ananth Arul
