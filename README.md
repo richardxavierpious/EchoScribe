@@ -1,6 +1,8 @@
 # EchoScribe
 
 A powerful tool that takes an audio recording as input, converts it to text using speech-to-text technology, and generates a concise summary of the transcript.
+![Screenshot 2025-01-31 090952](https://github.com/user-attachments/assets/e4344bbc-2d15-41f0-ae8a-8098bbf4a7a0)
+
 
 ## Features
 
