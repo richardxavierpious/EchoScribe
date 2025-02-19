@@ -2,6 +2,7 @@ import logging
 import requests
 import azure.functions as func
 from config import API_KEY
+import os
 
 app = func.FunctionApp()
 
@@ -24,6 +25,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # Parse JSON request body
         req_body = req.get_json()
         conversation = req_body.get('conversation')
+        summary_type = req_body.get('summaryType', 'brief')  # Default to 'brief' if not provided
 
         if not conversation:
             return func.HttpResponse(
@@ -36,11 +38,17 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 }
             )
 
+        # Determine the prompt based on the summary type
+        if summary_type == 'executive':
+            prompt = f"Provide an executive summary of the following text, emphasizing key findings, context, and actionable insights. Ensure clarity for decision-makers but avoid excessive detail. Response must not exceed 250 tokens.:\n\n{conversation}"
+        else:
+            prompt = f"Summarize the following text in two to three sentences focusing only on the core idea. Keep it concise and to the point, avoiding unnecessary details. Response must not exceed 100 tokens:\n\n{conversation}"
+
         # OpenAI deployment details
-        endpoint = "https://ericsummarysi.openai.azure.com/"
-        deployment_name = "gpt-4"
-        api_key = API_KEY
-        api_version = "2024-08-01-preview"
+        endpoint = "https://ericsummarysi.openai.azure.com/"  # Replace with your endpoint
+        deployment_name = "gpt-4"  # Replace with your deployment name
+        api_key = API_KEY  # Replace with your API key
+        api_version = "2024-08-01-preview"  # Replace with your API version
 
         # GPT-4 endpoint
         url = f"{endpoint}openai/deployments/{deployment_name}/chat/completions?api-version={api_version}"
@@ -54,14 +62,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             "messages": [
                 {
                     "role": "system",
-                    "content": "You are a helpful assistant that generates an executive summary of a conversation , basically only include the most important takeaways ."
+                    "content": "You are a helpful assistant that summarizes conversations."
                 },
                 {
                     "role": "user",
-                    "content": f"Summarize the following text:\n\n{conversation}"
+                    "content": prompt
                 }
             ],
-            "max_tokens": 150,
+            "max_tokens": 250,
             "temperature": 0.7
         }
 
@@ -112,7 +120,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     except requests.exceptions.RequestException as e:
         logging.error("Error communicating with GPT model: %s", str(e))
         return func.HttpResponse(
-            "Error communicating with GPT model.",
+            f"Error communicating with GPT model: {str(e)}",
             status_code=500,
             headers={
                 "Access-Control-Allow-Origin": "*",

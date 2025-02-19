@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function App() {
   const [conversation, setConversation] = useState('');
   const [summary, setSummary] = useState('');
   const [audioFile, setAudioFile] = useState(null);
   const [fileName, setFileName] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -17,7 +19,7 @@ function App() {
       alert('Please select an audio file to transcribe.');
       return;
     }
-
+    setLoading(true);
     const formData = new FormData();
     formData.append('file', audioFile);
 
@@ -25,42 +27,36 @@ function App() {
       const response = await fetch('http://localhost:5000/transcribe', {
         method: 'POST',
         body: formData,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST',
-          'Access-Control-Allow-Headers': 'Content-Type',
-        },
       });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
+      if (!response.ok) throw new Error('Network response was not ok');
+      
       const data = await response.json();
-      setConversation(data.transcript);  // Set the transcription output in the text area
+      setConversation(data.transcript);
     } catch (error) {
       console.error('Error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSummarize = async () => {
+  const handleSummarize = async (summaryType) => {
+    setLoading(true);
     try {
       const response = await fetch('http://localhost:7071/api/summarize', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ conversation }),
+        body: JSON.stringify({ conversation, summaryType }),
       });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const data = await response.text(); // Get response as text
-      setSummary(data); // Set the summary directly
+      if (!response.ok) throw new Error('Network response was not ok');
+      
+      const data = await response.text();
+      setSummary(data);
     } catch (error) {
       console.error('Error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -80,13 +76,15 @@ function App() {
         Browse
       </label>
 
-      {/* Display Selected File Name */}
-      {fileName && <p style={styles.fileName}>Selected Audio File:  {fileName}</p>}
+      {fileName && <p style={styles.fileName}>{fileName}</p>}
 
       {/* Generate Transcript Button */}
       <button style={styles.button} onClick={handleTranscribe}>
         Generate Transcript
       </button>
+
+      {/* Loading Indicator */}
+      {loading && <CircularProgress style={{ margin: '20px' }} />}
 
       {/* Text Area for Conversation Input */}
       <textarea
@@ -96,9 +94,12 @@ function App() {
         onChange={(e) => setConversation(e.target.value)}
       />
 
-      {/* Summarize Button */}
-      <button style={styles.button} onClick={handleSummarize}>
-        Summarize
+      {/* Summarize Buttons */}
+      <button style={styles.button} onClick={() => handleSummarize('brief')}>
+        Brief Summary
+      </button>
+      <button style={styles.button} onClick={() => handleSummarize('executive')}>
+        Executive Summary
       </button>
 
       {/* Display Summary */}
