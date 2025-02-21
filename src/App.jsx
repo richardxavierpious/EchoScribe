@@ -90,7 +90,7 @@ function App() {
         <h1>ECHOSCRIBE</h1>
       </div>
 
-      {/* Second bar with file input, record button, and file name */}
+      {/* Second bar with file input, file name, and record button */}
       <div className="top-bar">
         {/* Hidden file input */}
         <input
@@ -104,11 +104,12 @@ function App() {
           Upload File
         </label>
 
-        <button className="button record-button">Record</button>
-
+        {/* File name placed between the two buttons */}
         <span className="file-name">
           {fileName ? fileName : '*file_name.mp3'}
         </span>
+
+        <button className="button record-button">Record</button>
       </div>
 
       {/* Main content area: two columns */}
