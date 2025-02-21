@@ -73,8 +73,13 @@ function App() {
 
   const downloadPDF = (summaryContent) => {
     const doc = new jsPDF();
-    // You can update the positions as needed
-    doc.text(summaryContent, 10, 10);
+    const margin = 10;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const maxWidth = pageWidth - margin * 2;
+    
+    // Split the summary text into wrapped lines
+    const textLines = doc.splitTextToSize(summaryContent, maxWidth);
+    doc.text(textLines, margin, margin);
     doc.save('summary.pdf');
   };
 
