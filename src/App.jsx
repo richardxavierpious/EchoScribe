@@ -96,7 +96,7 @@ function App() {
           style={{ display: 'none' }}
         />
         <label htmlFor="fileInput" className="button browse-button">
-          Browse
+          Upload File
         </label>
 
         <button className="button record-button">Record</button>
@@ -137,13 +137,13 @@ function App() {
               className="button"
               onClick={() => handleSummarize('executive')}
             >
-              Exe. Sum
+              Executive Summmary
             </button>
             <button
               className="button"
               onClick={() => handleSummarize('brief')}
             >
-              Brief Sum
+              Brief Summmary
             </button>
           </div>
 
