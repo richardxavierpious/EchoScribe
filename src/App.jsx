@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
+import './styles.css';
 
 function App() {
   const [conversation, setConversation] = useState('');
-  const [summary, setSummary] = useState('');
+  const [executiveSummary, setExecutiveSummary] = useState('');
+  const [briefSummary, setBriefSummary] = useState('');
   const [audioFile, setAudioFile] = useState(null);
   const [fileName, setFileName] = useState('');
-  const [loading, setLoading] = useState(false);
+
+  // Indicates which operation is loading: 'transcribing', 'executive', 'brief', or null.
+  const [loadingOperation, setLoadingOperation] = useState(null);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -19,7 +23,7 @@ function App() {
       alert('Please select an audio file to transcribe.');
       return;
     }
-    setLoading(true);
+    setLoadingOperation('transcribing');
     const formData = new FormData();
     formData.append('file', audioFile);
 
@@ -29,18 +33,19 @@ function App() {
         body: formData,
       });
       if (!response.ok) throw new Error('Network response was not ok');
-      
+
       const data = await response.json();
       setConversation(data.transcript);
     } catch (error) {
       console.error('Error:', error);
     } finally {
-      setLoading(false);
+      setLoadingOperation(null);
     }
   };
 
   const handleSummarize = async (summaryType) => {
-    setLoading(true);
+    setLoadingOperation(summaryType === 'executive' ? 'executive' : 'brief');
+
     try {
       const response = await fetch('http://localhost:7071/api/summarize', {
         method: 'POST',
@@ -50,118 +55,117 @@ function App() {
         body: JSON.stringify({ conversation, summaryType }),
       });
       if (!response.ok) throw new Error('Network response was not ok');
-      
+
       const data = await response.text();
-      setSummary(data);
+      if (summaryType === 'executive') {
+        setExecutiveSummary(data);
+      } else {
+        setBriefSummary(data);
+      }
     } catch (error) {
       console.error('Error:', error);
     } finally {
-      setLoading(false);
+      setLoadingOperation(null);
     }
   };
 
   return (
-    <div className="App" style={styles.container}>
-      <h1 style={styles.heading}>EchoScribe</h1>
+    <div className="app">
+      {/* Top Header */}
+      <div className="header">
+        <h1>ECHOSCRIBE</h1>
+      </div>
 
-      {/* File Input for Audio Upload */}
-      <input
-        type="file"
-        accept="audio/*"
-        onChange={handleFileChange}
-        style={styles.fileInput}
-        id="fileInput"
-      />
-      <label htmlFor="fileInput" style={styles.button}>
-        Browse
-      </label>
+      {/* Second bar with file input, record button, and file name */}
+      <div className="top-bar">
+        {/* Hidden file input */}
+        <input
+          type="file"
+          accept="audio/*"
+          onChange={handleFileChange}
+          id="fileInput"
+          style={{ display: 'none' }}
+        />
+        <label htmlFor="fileInput" className="button browse-button">
+          Browse
+        </label>
 
-      {fileName && <p style={styles.fileName}>{fileName}</p>}
+        <button className="button record-button">Record</button>
 
-      {/* Generate Transcript Button */}
-      <button style={styles.button} onClick={handleTranscribe}>
-        Generate Transcript
-      </button>
+        <span className="file-name">
+          {fileName ? fileName : '*file_name.mp3'}
+        </span>
+      </div>
 
-      {/* Loading Indicator */}
-      {loading && <CircularProgress style={{ margin: '20px' }} />}
+      {/* Main content area: two columns */}
+      <div className="content-container">
+        {/* Left column: Transcription */}
+        <div className="transcription-container">
 
-      {/* Text Area for Conversation Input */}
-      <textarea
-        style={styles.textArea}
-        placeholder="Enter conversation here..."
-        value={conversation}
-        onChange={(e) => setConversation(e.target.value)}
-      />
 
-      {/* Summarize Buttons */}
-      <button style={styles.button} onClick={() => handleSummarize('brief')}>
-        Brief Summary
-      </button>
-      <button style={styles.button} onClick={() => handleSummarize('executive')}>
-        Executive Summary
-      </button>
+          {/* Transcribe button (same width as summary buttons) */}
+          <button className="button" onClick={handleTranscribe}>
+            Transcribe
+          </button>
 
-      {/* Display Summary */}
-      {summary && (
-        <div style={styles.summary}>
-          <h2>Summary</h2>
-          <p>{summary}</p>
+          {/* Box that holds textarea (and spinner) */}
+          <div className="transcription-output">
+            <textarea
+              placeholder="Transcribed text will appear here..."
+              value={conversation}
+              onChange={(e) => setConversation(e.target.value)}
+            />
+            {loadingOperation === 'transcribing' && (
+              <CircularProgress style={{ margin: '10px auto 0' }} />
+            )}
+          </div>
         </div>
-      )}
+
+        {/* Right column: Summaries */}
+        <div className="summary-container">
+          <div className="buttons-row">
+            <button
+              className="button"
+              onClick={() => handleSummarize('executive')}
+            >
+              Exe. Sum
+            </button>
+            <button
+              className="button"
+              onClick={() => handleSummarize('brief')}
+            >
+              Brief Sum
+            </button>
+          </div>
+
+          <div className="summary-output">
+            <h4>Generated executive summary</h4>
+            {loadingOperation === 'executive' && (
+              <CircularProgress style={{ margin: '10px auto 0' }} />
+            )}
+            <p>{executiveSummary}</p>
+          </div>
+
+          <div className="summary-output">
+            <h4>Generated brief summary</h4>
+            {loadingOperation === 'brief' && (
+              <CircularProgress style={{ margin: '10px auto 0' }} />
+            )}
+            <p>{briefSummary}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="footer">
+        <div className="footer-links">
+          <a href="#">Contact Info</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms</a>
+        </div>
+      </div>
     </div>
   );
 }
-
-// Basic inline styles for components
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100vh',
-    fontFamily: 'Arial, sans-serif',
-    backgroundColor: '#f4f4f4',
-    padding: '20px',
-  },
-  heading: {
-    fontSize: '2rem',
-    color: '#333',
-    marginBottom: '20px',
-  },
-  fileInput: {
-    display: 'none',
-  },
-  textArea: {
-    width: '80%',
-    height: '200px',
-    padding: '10px',
-    fontSize: '1rem',
-    border: '1px solid #ccc',
-    borderRadius: '5px',
-    marginBottom: '20px',
-    resize: 'none',
-  },
-  button: {
-    padding: '10px 20px',
-    fontSize: '1rem',
-    color: '#fff',
-    backgroundColor: '#007BFF',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    marginBottom: '10px',
-  },
-  fileName: {
-    marginTop: '10px',
-    fontSize: '1rem',
-    color: '#333',
-  },
-  summary: {
-    marginTop: '20px',
-    textAlign: 'center',
-  },
-};
 
 export default App;
