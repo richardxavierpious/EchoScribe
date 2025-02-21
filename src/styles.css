@@ -1,178 +1,230 @@
 :root {
-    --primary-color: #0a2a66; /* Navy header/footer */
-    --secondary-color: #4a4a4a; /* Dark Gray for text */
-    --background-color: #f2f2f2;
-    --container-bg: #ffffff;
-    --font-family: 'Montserrat', sans-serif;
-  }
-  
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    background: var(--background-color);
-    font-family: var(--font-family);
-    color: var(--secondary-color);
-    min-height: 100vh;
-  }
-  
-  /* Wrapper for entire app */
-  .app {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  
-  /* Header */
-  .header {
-    background-color: var(--primary-color);
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .header h1 {
-    color: #fff;
-    margin: 0;
-  }
-  
-  /* Top Bar */
-  .top-bar {
-    background-color: var(--primary-color);
-    display: flex;
-    align-items: center;
-    padding: 10px 20px;
-    gap: 10px;
-  }
-  
-  .file-name {
-    color: #fff;
-    font-size: 1rem;
-  }
-  
-  /* Buttons */
-  .button {
-    background-color: #007BFF;
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    text-decoration: none;
-    text-align: center;
-    transition: background-color 0.3s ease;
-    width: 130px; /* ensures consistent button widths */
-  }
-  
-  .button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* The main content area that holds the transcription container and summary container */
-  .content-container {
-    display: flex;
-    flex: 1;
-    padding: 20px;
-    gap: 20px;
-  }
-  
-  /* Transcription Container (Left Column) */
-  .transcription-container {
-    flex: 1; /* fill available vertical space */
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* space between heading/button and the output box */
-  }
-  
-  .transcription-container h3 {
-    margin-bottom: 0;
-  }
-  
-  /* Box that holds the textarea and spinner */
-  .transcription-output {
-    flex: 1; /* expand to fill remaining space */
-    background-color: var(--container-bg);
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start; /* left-align content */
-  }
-  
-  .transcription-output textarea {
-    flex: 1; /* grow to fill vertical space */
-    width: 100%;
-    background: transparent; /* match box background */
-    border: none; /* remove extra border */
-    outline: none;
-    resize: none;
-    font-size: 1rem;
-    color: var(--secondary-color);
-  }
-  
-  /* Summary Container (Right Column) */
-  .summary-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  /* Buttons row for Summaries */
-  .buttons-row {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-start;
-  }
-  
-  /* Each summary output box */
-  .summary-output {
-    background-color: var(--container-bg);
-    border-radius: 8px;
-    padding: 20px;
-    flex: 1;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center; /* center spinner horizontally */
-  }
-  
-  .summary-output h4 {
-    margin-bottom: 0;
-    align-self: flex-start; /* title aligned to the left */
-  }
-  
-  .summary-output p {
-    align-self: flex-start;
-    margin-top: 10px;
-  }
-  
-  /* Footer */
-  .footer {
-    background-color: var(--primary-color);
-    padding: 15px;
-    text-align: center;
-  }
-  
-  .footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  .footer-links a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: 500;
-  }
-  
-  .footer-links a:hover {
-    text-decoration: underline;
-  }
-  
+  --primary-color: #0a2a66; /* Navy header/footer */
+  --secondary-color: #4a4a4a; /* Dark Gray for text */
+  --background-color: #f2f2f2;
+  --container-bg: #ffffff;
+  --border-color: #dddddd;
+  --font-family: 'Montserrat', sans-serif;
+  --btn-bg: #007BFF;
+  --btn-hover-bg: #0056b3;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background-color);
+  font-family: var(--font-family);
+  color: var(--secondary-color);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* Wrapper for the entire app. Ensures full height and vertical spacing */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  background-color: var(--primary-color);
+  padding: 20px;
+  text-align: center;
+}
+
+.header h1 {
+  color: #fff;
+  margin: 0;
+  font-size: 2rem;
+}
+
+/* Top Bar */
+.top-bar {
+  background-color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  gap: 10px;
+}
+
+.file-name {
+  color: #fff;
+  font-size: 1rem;
+  margin-top: 0;
+  margin-right: 70px; /* Added gap between file name and record button */
+  text-align: center;
+}
+
+/* Buttons - reused for links and actions */
+.button {
+  background-color: var(--btn-bg);
+  color: #fff;
+  padding: 10px 15px; /* Default vertical padding */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  width: 130px;  /* Fixed width for upload & record */
+  margin-bottom: 15px; /* Extra space between buttons (default) */
+  display: inline-block;
+}
+
+.button:hover {
+  background-color: var(--btn-hover-bg);
+}
+
+/* Override button spacing in the top bar so they remain on one line */
+.top-bar .button {
+  margin-bottom: 0;
+}
+
+/* Summary Generation Buttons */
+.summary-button {
+  background-color: var(--btn-bg);
+  color: #fff;
+  /* Increase width and reduce vertical padding */
+  padding: 8px 15px; 
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  width: 180px;  /* Wider than upload buttons */
+  margin-bottom: 15px; /* Extra space between buttons */
+  display: inline-block;
+}
+
+/* For any additional buttons (e.g. transcribe, record) ensure extra margin */
+button, .button, .summary-button {
+  margin-bottom: 15px;
+}
+
+/* Paragraphs */
+p {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Content Container */
+.content-container {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* Transcription Container (Left Column) */
+.transcription-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Box for the textarea and spinner */
+.transcription-output {
+  flex: 1;
+  background-color: var(--container-bg);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.transcription-output textarea {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 1rem;
+  color: var(--secondary-color);
+}
+
+/* Summary Container (Right Column) */
+.summary-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Buttons row for the summary section */
+.buttons-row {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+/* Each summary output box */
+.summary-output {
+  background-color: var(--container-bg);
+  border-radius: 8px;
+  padding: 20px;
+  flex: 1;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.summary-output h4 {
+  margin-bottom: 0;
+  align-self: flex-start;
+}
+
+.summary-output p {
+  align-self: flex-start;
+  margin-top: 10px;
+  font-size: 1rem;
+}
+
+/* Footer */
+.footer {
+  background-color: var(--primary-color);
+  padding: 15px;
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.footer-links a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+/* Additional spacing utility */
+.spacer {
+  margin: 20px 0;
+}
+
+/* Override for Material UI Circular Progress to center it */
+.MuiCircularProgress-root {
+  display: block;
+  margin: 20px auto;
+}
