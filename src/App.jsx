@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import './styles.css';
+import { jsPDF } from 'jspdf';
+
 
 function App() {
   const [conversation, setConversation] = useState('');
@@ -67,6 +69,13 @@ function App() {
     } finally {
       setLoadingOperation(null);
     }
+  };
+
+  const downloadPDF = (summaryContent) => {
+    const doc = new jsPDF();
+    // You can update the positions as needed
+    doc.text(summaryContent, 10, 10);
+    doc.save('summary.pdf');
   };
 
   return (
@@ -144,6 +153,11 @@ function App() {
               <CircularProgress style={{ margin: '10px auto 0' }} />
             )}
             <p>{executiveSummary}</p>
+            {executiveSummary && (
+              <button onClick={() => downloadPDF(executiveSummary)}>
+                Download Executive Summary PDF
+              </button>
+            )}
           </div>
 
           <div className="summary-output">
@@ -152,6 +166,11 @@ function App() {
               <CircularProgress style={{ margin: '10px auto 0' }} />
             )}
             <p>{briefSummary}</p>
+            {briefSummary && (
+              <button onClick={() => downloadPDF(briefSummary)}>
+                Download Brief Summary PDF
+              </button>
+            )}
           </div>
         </div>
       </div>
