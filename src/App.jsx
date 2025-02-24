@@ -3,7 +3,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import './styles.css';
 import { jsPDF } from 'jspdf';
 
-
 function App() {
   const [conversation, setConversation] = useState('');
   const [executiveSummary, setExecutiveSummary] = useState('');
@@ -116,9 +115,7 @@ function App() {
       <div className="content-container">
         {/* Left column: Transcription */}
         <div className="transcription-container">
-
-
-          {/* Transcribe button (same width as summary buttons) */}
+          {/* Transcribe button */}
           <button className="button" onClick={handleTranscribe}>
             Transcribe
           </button>
@@ -143,13 +140,13 @@ function App() {
               className="button"
               onClick={() => handleSummarize('executive')}
             >
-              Executive Summmary
+              Executive Summary
             </button>
             <button
               className="button"
               onClick={() => handleSummarize('brief')}
             >
-              Brief Summmary
+              Brief Summary
             </button>
           </div>
 
@@ -160,7 +157,9 @@ function App() {
             )}
             <p>{executiveSummary}</p>
             {executiveSummary && (
-              <button onClick={() => downloadPDF(executiveSummary)}>
+              /* Use the same button style to keep layout consistent */
+              <button className="button download-button" 
+                      onClick={() => downloadPDF(executiveSummary)}>
                 Download Executive Summary PDF
               </button>
             )}
@@ -173,7 +172,9 @@ function App() {
             )}
             <p>{briefSummary}</p>
             {briefSummary && (
-              <button onClick={() => downloadPDF(briefSummary)}>
+              /* Use the same button style to keep layout consistent */
+              <button className="button download-button"
+                      onClick={() => downloadPDF(briefSummary)}>
                 Download Brief Summary PDF
               </button>
             )}

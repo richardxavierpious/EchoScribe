@@ -23,7 +23,7 @@ body {
   line-height: 1.6;
 }
 
-/* Wrapper for the entire app. Ensures full height and vertical spacing */
+/* Wrapper for the entire app */
 .app {
   display: flex;
   flex-direction: column;
@@ -56,15 +56,15 @@ body {
   color: #fff;
   font-size: 1rem;
   margin-top: 0;
-  margin-right: 70px; /* Added gap between file name and record button */
-  text-align: center;
+  margin-right: 10px;
+  text-align: left; /* or center if you prefer */
 }
 
 /* Buttons - reused for links and actions */
 .button {
   background-color: var(--btn-bg);
   color: #fff;
-  padding: 10px 15px; /* Default vertical padding */
+  padding: 10px 15px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -72,8 +72,8 @@ body {
   text-decoration: none;
   text-align: center;
   transition: background-color 0.3s ease;
-  width: 130px;  /* Fixed width for upload & record */
-  margin-bottom: 15px; /* Extra space between buttons (default) */
+  width: 130px;  
+  margin-bottom: 15px;
   display: inline-block;
 }
 
@@ -81,42 +81,27 @@ body {
   background-color: var(--btn-hover-bg);
 }
 
-/* Override button spacing in the top bar so they remain on one line */
+/* Keep top-bar buttons on one line */
 .top-bar .button {
   margin-bottom: 0;
 }
 
-/* Summary Generation Buttons */
-.summary-button {
-  background-color: var(--btn-bg);
-  color: #fff;
-  /* Increase width and reduce vertical padding */
-  padding: 8px 15px; 
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  text-decoration: none;
-  text-align: center;
-  transition: background-color 0.3s ease;
-  width: 180px;  /* Wider than upload buttons */
-  margin-bottom: 15px; /* Extra space between buttons */
-  display: inline-block;
+/* Download buttons styled similarly */
+.download-button {
+  width: auto;        
+  margin-bottom: 0;   
+  margin-top: 10px;   
+  align-self: flex-start; /* Left-align the download button too */
 }
 
-/* For any additional buttons (e.g. transcribe, record) ensure extra margin */
-button, .button, .summary-button {
-  margin-bottom: 15px;
-}
-
-/* Paragraphs */
+/* Paragraphs (remove text-align: center) */
 p {
   font-size: 1rem;
   margin-bottom: 15px;
-  text-align: center;
+  /* No text-align here so they default to left */
 }
 
-/* Content Container */
+/* Main Content Container */
 .content-container {
   display: flex;
   flex: 1;
@@ -181,18 +166,17 @@ p {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  align-items: center;
+  align-items: flex-start; /* KEY: left-aligns everything inside */
 }
 
 .summary-output h4 {
   margin-bottom: 0;
-  align-self: flex-start;
 }
 
 .summary-output p {
-  align-self: flex-start;
   margin-top: 10px;
   font-size: 1rem;
+  /* No align-self override needed, as align-items: flex-start does the job */
 }
 
 /* Footer */
