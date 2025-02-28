@@ -9,6 +9,7 @@ function App() {
   const [briefSummary, setBriefSummary] = useState('');
   const [audioFile, setAudioFile] = useState(null);
   const [fileName, setFileName] = useState('');
+  const [currentPage, setCurrentPage] = useState(1); // 1: Upload, 2: Transcribe, 3: Summary
 
   // Indicates which operation is loading: 'transcribing', 'executive', 'brief', or null.
   const [loadingOperation, setLoadingOperation] = useState(null);
@@ -37,6 +38,8 @@ function App() {
 
       const data = await response.json();
       setConversation(data.transcript);
+      // Automatically move to the summary page after transcription
+      setCurrentPage(3);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -82,114 +85,261 @@ function App() {
     doc.save('summary.pdf');
   };
 
+  // Navigation functions
+  const goToUpload = () => setCurrentPage(1);
+  const goToTranscribe = () => {
+    if (audioFile) {
+      setCurrentPage(2);
+    } else {
+      alert('Please select an audio file first.');
+    }
+  };
+  const goToSummary = () => {
+    if (conversation) {
+      setCurrentPage(3);
+    } else {
+      alert('Please transcribe the audio first.');
+    }
+  };
+
   return (
     <div className="app">
-      {/* Top Header */}
-      <div className="header">
-        <h1>ECHOSCRIBE</h1>
-      </div>
-
-      {/* Second bar with file input, file name, and record button */}
-      <div className="top-bar">
-        {/* Hidden file input */}
-        <input
-          type="file"
-          accept="audio/*"
-          onChange={handleFileChange}
-          id="fileInput"
-          style={{ display: 'none' }}
-        />
-        <label htmlFor="fileInput" className="button browse-button">
-          Upload File
-        </label>
-
-        {/* File name placed between the two buttons */}
-        <span className="file-name">
-          {fileName ? fileName : '*file_name.mp3'}
-        </span>
-
-        <button className="button record-button">Record</button>
-      </div>
-
-      {/* Main content area: two columns */}
-      <div className="content-container">
-        {/* Left column: Transcription */}
-        <div className="transcription-container">
-          {/* Transcribe button */}
-          <button className="button" onClick={handleTranscribe}>
-            Transcribe
+      {/* Top Header - Present on all pages */}
+      <header className="app-header">
+        <div className="logo-container">
+        <img src="/echoscribelogo1.png" alt="EchoScribe Logo" className="logo" />
+        </div>
+        
+        {/* Navigation Tabs */}
+        <nav className="main-nav">
+          <button 
+            className={`nav-tab ${currentPage === 1 ? 'active' : ''}`} 
+            onClick={goToUpload}
+          >
+            1. Upload
           </button>
+          <button 
+            className={`nav-tab ${currentPage === 2 ? 'active' : ''}`} 
+            onClick={goToTranscribe}
+            disabled={!audioFile}
+          >
+            2. Transcribe
+          </button>
+          <button 
+            className={`nav-tab ${currentPage === 3 ? 'active' : ''}`} 
+            onClick={goToSummary}
+            disabled={!conversation}
+          >
+            3. Summarize
+          </button>
+        </nav>
+      </header>
 
-          {/* Box that holds textarea (and spinner) */}
-          <div className="transcription-output">
-            <textarea
-              placeholder="Transcribed text will appear here..."
-              value={conversation}
-              onChange={(e) => setConversation(e.target.value)}
-            />
-            {loadingOperation === 'transcribing' && (
-              <CircularProgress style={{ margin: '10px auto 0' }} />
-            )}
-          </div>
-        </div>
-
-        {/* Right column: Summaries */}
-        <div className="summary-container">
-          <div className="buttons-row">
-            <button
-              className="button"
-              onClick={() => handleSummarize('executive')}
-            >
-              Executive Summary
-            </button>
-            <button
-              className="button"
-              onClick={() => handleSummarize('brief')}
-            >
-              Brief Summary
-            </button>
-          </div>
-
-          <div className="summary-output">
-            <h4>Generated executive summary</h4>
-            {loadingOperation === 'executive' && (
-              <CircularProgress style={{ margin: '10px auto 0' }} />
-            )}
-            <p>{executiveSummary}</p>
-            {executiveSummary && (
-              /* Use the same button style to keep layout consistent */
-              <button className="button download-button" 
-                      onClick={() => downloadPDF(executiveSummary)}>
-                Download Executive Summary PDF
+      <main className="app-content">
+        {/* PAGE 1: UPLOAD */}
+        {currentPage === 1 && (
+          <div className="page upload-page">
+            <h2>Upload or Record Audio</h2>
+            <p className="page-description">
+              Start by uploading an audio file or recording directly within the application
+            </p>
+            
+            <div className="upload-options">
+              <div className="upload-card">
+                <div className="card-icon">
+                  <span className="material-icon">📁</span>
+                </div>
+                <h3>Upload Audio File</h3>
+                <p>Select an audio file from your device</p>
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleFileChange}
+                  id="fileInput"
+                  style={{ display: 'none' }}
+                />
+                <label htmlFor="fileInput" className="button browse-button">
+                  Select File
+                </label>
+                {fileName && (
+                  <div className="selected-file">
+                    <span className="file-label">Selected:</span>
+                    <span className="file-name-display">{fileName}</span>
+                  </div>
+                )}
+              </div>
+              
+              <div className="divider">
+                <span>OR</span>
+              </div>
+              
+              <div className="upload-card">
+                <div className="card-icon">
+                  <span className="material-icon">🎙️</span>
+                </div>
+                <h3>Record Audio</h3>
+                <p>Record audio directly using your microphone</p>
+                <button className="button record-button">
+                  Start Recording
+                </button>
+              </div>
+            </div>
+            
+            <div className="page-actions">
+              <button 
+                className="button action-button next-button"
+                onClick={goToTranscribe}
+                disabled={!audioFile}
+              >
+                Continue to Transcription
               </button>
-            )}
+            </div>
           </div>
-
-          <div className="summary-output">
-            <h4>Generated brief summary</h4>
-            {loadingOperation === 'brief' && (
-              <CircularProgress style={{ margin: '10px auto 0' }} />
-            )}
-            <p>{briefSummary}</p>
-            {briefSummary && (
-              /* Use the same button style to keep layout consistent */
-              <button className="button download-button"
-                      onClick={() => downloadPDF(briefSummary)}>
-                Download Brief Summary PDF
+        )}
+        
+        {/* PAGE 2: TRANSCRIBE */}
+        {currentPage === 2 && (
+          <div className="page transcribe-page">
+            <h2>Transcribe Audio</h2>
+            <p className="page-description">
+              Convert your audio into text with our advanced transcription engine
+            </p>
+            
+            <div className="file-info">
+              <span className="file-info-label">Selected file:</span>
+              <span className="file-info-name">{fileName}</span>
+            </div>
+            
+            <div className="transcription-container">
+              <div className="transcription-controls">
+                <button className="button transcribe-button" onClick={handleTranscribe}>
+                  Start Transcription
+                </button>
+              </div>
+              
+              <div className="transcription-output">
+                {loadingOperation === 'transcribing' ? (
+                  <div className="loading-container">
+                    <CircularProgress style={{ color: 'var(--primary-color)' }} />
+                    <p className="loading-text">Transcribing audio...</p>
+                  </div>
+                ) : (
+                  <textarea
+                    placeholder="Transcribed text will appear here..."
+                    value={conversation}
+                    onChange={(e) => setConversation(e.target.value)}
+                  />
+                )}
+              </div>
+            </div>
+            
+            <div className="page-actions">
+              <button className="button action-button back-button" onClick={goToUpload}>
+                Back to Upload
               </button>
-            )}
+              <button 
+                className="button action-button next-button"
+                onClick={goToSummary}
+                disabled={!conversation}
+              >
+                Continue to Summary
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
+        )}
+        
+        {/* PAGE 3: SUMMARIZE */}
+        {currentPage === 3 && (
+          <div className="page summary-page">
+            <h2>Generate Summaries</h2>
+            <p className="page-description">
+              Create concise summaries from your transcribed text
+            </p>
+            
+            <div className="summary-options">
+              <div className="summary-controls">
+                <button 
+                  className="button summary-button"
+                  onClick={() => handleSummarize('executive')}
+                >
+                  Generate Executive Summary
+                </button>
+                <button 
+                  className="button summary-button"
+                  onClick={() => handleSummarize('brief')}
+                >
+                  Generate Brief Summary
+                </button>
+              </div>
+              
+              <div className="summary-results">
+                <div className="summary-card">
+                  <h3>Executive Summary</h3>
+                  <div className="summary-content">
+                    {loadingOperation === 'executive' ? (
+                      <div className="loading-container">
+                        <CircularProgress style={{ color: 'var(--primary-color)' }} />
+                        <p className="loading-text">Generating executive summary...</p>
+                      </div>
+                    ) : (
+                      <p className="summary-text">{executiveSummary || "No executive summary generated yet."}</p>
+                    )}
+                  </div>
+                  {executiveSummary && (
+                    <button 
+                      className="button download-button"
+                      onClick={() => downloadPDF(executiveSummary)}
+                    >
+                      Download PDF
+                    </button>
+                  )}
+                </div>
+                
+                <div className="summary-card">
+                  <h3>Brief Summary</h3>
+                  <div className="summary-content">
+                    {loadingOperation === 'brief' ? (
+                      <div className="loading-container">
+                        <CircularProgress style={{ color: 'var(--primary-color)' }} />
+                        <p className="loading-text">Generating brief summary...</p>
+                      </div>
+                    ) : (
+                      <p className="summary-text">{briefSummary || "No brief summary generated yet."}</p>
+                    )}
+                  </div>
+                  {briefSummary && (
+                    <button 
+                      className="button download-button"
+                      onClick={() => downloadPDF(briefSummary)}
+                    >
+                      Download PDF
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            <div className="page-actions">
+              <button className="button action-button back-button" onClick={goToTranscribe}>
+                Back to Transcription
+              </button>
+            </div>
+          </div>
+        )}
+      </main>
 
-      {/* Footer */}
-      <div className="footer">
+      {/* Footer - Present on all pages */}
+      <footer className="app-footer">
+        <div className="footer-logo">
+        <img src="/echoscribelogo1.png" alt="EchoScribe Logo" className="logo" />
+        
+        </div>
         <div className="footer-links">
           <a href="#">Contact Info</a>
           <a href="#">Privacy Policy</a>
           <a href="#">Terms</a>
         </div>
-      </div>
+      </footer>
     </div>
   );
 }

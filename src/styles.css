@@ -1,12 +1,16 @@
 :root {
-  --primary-color: #0a2a66; /* Navy header/footer */
-  --secondary-color: #4a4a4a; /* Dark Gray for text */
-  --background-color: #f2f2f2;
+  --primary-color: #2563eb; /* Modern blue */
+  --primary-dark: #1e40af;
+  --primary-light: #dbeafe;
+  --accent-color: #f97316; /* Orange accent */
+  --secondary-color: #334155; /* Slate gray for text */
+  --background-color: #f1f5f9;
   --container-bg: #ffffff;
-  --border-color: #dddddd;
-  --font-family: 'Montserrat', sans-serif;
-  --btn-bg: #007BFF;
-  --btn-hover-bg: #0056b3;
+  --border-color: #e2e8f0;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --font-family: 'Inter', 'Segoe UI', Roboto, -apple-system, sans-serif;
+  --radius: 10px;
+  --transition: all 0.25s ease;
 }
 
 * {
@@ -23,192 +27,492 @@ body {
   line-height: 1.6;
 }
 
-/* Wrapper for the entire app */
+/* App container */
 .app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* Header */
-.header {
-  background-color: var(--primary-color);
-  padding: 20px;
-  text-align: center;
-}
-
-.header h1 {
-  color: #fff;
-  margin: 0;
-  font-size: 2rem;
-}
-
-/* Top Bar */
-.top-bar {
-  background-color: var(--primary-color);
+/* ===== HEADER ===== */
+.app-header {
   display: flex;
   align-items: center;
-  padding: 10px 20px;
-  gap: 10px;
+  justify-content: space-between;
+  padding: 20px 40px;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 10;
 }
 
-.file-name {
-  color: #fff;
-  font-size: 1rem;
-  margin-top: 0;
-  margin-right: 10px;
-  text-align: left; /* or center if you prefer */
+
+
+
+
+.main-nav {
+  display: flex;
+  gap: 5px;
 }
 
-/* Buttons - reused for links and actions */
-.button {
-  background-color: var(--btn-bg);
-  color: #fff;
-  padding: 10px 15px;
+.nav-tab {
+  padding: 12px 24px;
   border: none;
-  border-radius: 5px;
+  background: none;
   cursor: pointer;
-  font-size: 1rem;
-  text-decoration: none;
-  text-align: center;
-  transition: background-color 0.3s ease;
-  width: 130px;  
-  margin-bottom: 15px;
-  display: inline-block;
+  color: var(--secondary-color);
+  font-weight: 500;
+  border-radius: var(--radius);
+  transition: var(--transition);
+  font-size: 0.95rem;
+  position: relative;
 }
 
-.button:hover {
-  background-color: var(--btn-hover-bg);
+.nav-tab:hover:not(:disabled) {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
 }
 
-/* Keep top-bar buttons on one line */
-.top-bar .button {
-  margin-bottom: 0;
+.nav-tab.active {
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+  font-weight: 600;
 }
 
-/* Download buttons styled similarly */
-.download-button {
-  width: auto;        
-  margin-bottom: 0;   
-  margin-top: 10px;   
-  align-self: flex-start; /* Left-align the download button too */
+.nav-tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-/* Paragraphs (remove text-align: center) */
-p {
-  font-size: 1rem;
-  margin-bottom: 15px;
-  /* No text-align here so they default to left */
+.nav-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 25%;
+  width: 50%;
+  height: 3px;
+  background-color: var(--primary-color);
+  border-radius: 3px 3px 0 0;
 }
 
-/* Main Content Container */
-.content-container {
-  display: flex;
+/* ===== MAIN CONTENT ===== */
+.app-content {
   flex: 1;
-  padding: 20px;
-  gap: 20px;
-}
-
-/* Transcription Container (Left Column) */
-.transcription-container {
-  flex: 1;
+  padding: 40px;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* Box for the textarea and spinner */
-.transcription-output {
-  flex: 1;
-  background-color: var(--container-bg);
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
   align-items: flex-start;
+  justify-content: center;
+}
+
+.page {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page h2 {
+  font-size: 1.75rem;
+  color: var(--primary-dark);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.page-description {
+  color: var(--secondary-color);
+  opacity: 0.85;
+  font-size: 1.05rem;
+  margin-bottom: 30px;
+}
+
+/* ===== PAGE 1: UPLOAD ===== */
+.upload-options {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.upload-card {
+  flex: 1;
+  background: white;
+  padding: 40px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: var(--transition);
+  border: 1px solid var(--border-color);
+}
+
+.upload-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.card-icon {
+  font-size: 2.4rem;
+  margin-bottom: 20px;
+}
+
+.upload-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: var(--primary-dark);
+}
+
+.upload-card p {
+  margin-bottom: 25px;
+  color: var(--secondary-color);
+  opacity: 0.8;
+}
+
+.selected-file {
+  margin-top: 15px;
+  background: var(--primary-light);
+  padding: 10px 15px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.file-label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--primary-color);
+}
+
+.file-name-display {
+  word-break: break-all;
+  text-align: center;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.divider span {
+  padding: 10px;
+  background: white;
+  border-radius: 50%;
+  font-weight: 600;
+  color: var(--secondary-color);
+  margin: 10px 0;
+}
+
+/* ===== PAGE 2: TRANSCRIBE ===== */
+.transcribe-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-info {
+  background: var(--primary-light);
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  margin-bottom: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.file-info-label {
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.transcription-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.transcription-controls {
+  display: flex;
+  gap: 15px;
+}
+
+.transcribe-button {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 600;
+}
+
+.transcription-output {
+  background: white;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+  height: 400px;
+  overflow: hidden;
+  position: relative;
 }
 
 .transcription-output textarea {
-  flex: 1;
   width: 100%;
-  background: transparent;
+  height: 100%;
+  padding: 20px;
   border: none;
-  outline: none;
   resize: none;
   font-size: 1rem;
+  font-family: var(--font-family);
+  color: var(--secondary-color);
+  line-height: 1.6;
+}
+
+.transcription-output textarea:focus {
+  outline: none;
+}
+
+.loading-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.loading-text {
+  margin-top: 15px;
+  color: var(--primary-dark);
+  font-weight: 500;
+}
+
+/* ===== PAGE 3: SUMMARIZE ===== */
+.summary-options {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.summary-controls {
+  display: flex;
+  gap: 15px;
+}
+
+.summary-button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 12px 20px;
+  font-weight: 600;
+}
+
+.summary-results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.summary-card {
+  background: white;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-card h3 {
+  color: var(--primary-dark);
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.summary-content {
+  flex: 1;
+  position: relative;
+  min-height: 200px;
+}
+
+.summary-text {
+  line-height: 1.6;
   color: var(--secondary-color);
 }
 
-/* Summary Container (Right Column) */
-.summary-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* Buttons row for the summary section */
-.buttons-row {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-start;
-}
-
-/* Each summary output box */
-.summary-output {
-  background-color: var(--container-bg);
-  border-radius: 8px;
-  padding: 20px;
-  flex: 1;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start; /* KEY: left-aligns everything inside */
-}
-
-.summary-output h4 {
-  margin-bottom: 0;
-}
-
-.summary-output p {
-  margin-top: 10px;
-  font-size: 1rem;
-  /* No align-self override needed, as align-items: flex-start does the job */
-}
-
-/* Footer */
-.footer {
+/* ===== COMMON COMPONENTS ===== */
+.button {
   background-color: var(--primary-color);
-  padding: 15px;
-  text-align: center;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: var(--transition);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button:hover:not(:disabled) {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.record-button {
+  background-color: var(--accent-color);
+}
+
+.record-button:hover {
+  background-color: #ea580c;
+}
+
+.download-button {
+  margin-top: 20px;
+  align-self: flex-start;
+  background-color: var(--secondary-color);
+  font-size: 0.9rem;
+  padding: 10px 20px;
+}
+
+.download-button:hover {
+  background-color: #475569;
+}
+
+.page-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+
+.action-button {
+  min-width: 150px;
+}
+
+.back-button {
+  background-color: transparent;
+  color: var(--secondary-color);
+  border: 1px solid var(--border-color);
+}
+
+.back-button:hover {
+  background-color: var(--background-color);
+  transform: translateY(-2px);
+}
+
+.next-button {
+  font-weight: 600;
+}
+
+/* ===== FOOTER ===== */
+.app-footer {
+  background: white;
+  padding: 25px 40px;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-container img {
+  width: 150px;  /* Adjust width as needed */
+  height: auto;
+  display: block;
+  margin: auto;
+}
+
+
+.footer-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.footer-logo img {
+  max-width: 150px; /* Adjust as needed */
+  height: auto;
 }
 
 .footer-links {
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  gap: 25px;
 }
 
 .footer-links a {
-  color: #fff;
+  color: var(--secondary-color);
   text-decoration: none;
-  font-weight: 500;
+  font-size: 0.9rem;
+  transition: var(--transition);
 }
 
 .footer-links a:hover {
-  text-decoration: underline;
+  color: var(--primary-color);
 }
 
-/* Additional spacing utility */
-.spacer {
-  margin: 20px 0;
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 992px) {
+  .app-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .summary-results {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* Override for Material UI Circular Progress to center it */
-.MuiCircularProgress-root {
-  display: block;
-  margin: 20px auto;
+@media (max-width: 768px) {
+  .app-content {
+    padding: 20px;
+  }
+  
+  .upload-options {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .divider {
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .app-footer {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .main-nav {
+    width: 100%;
+  }
+  
+  .nav-tab {
+    flex: 1;
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+  
+  .page h2 {
+    font-size: 1.5rem;
+  }
 }
