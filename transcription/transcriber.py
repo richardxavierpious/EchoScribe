@@ -25,7 +25,7 @@ def transcribe():
         file.save(file_path)
 
         transcriber = aai.Transcriber()
-        config = aai.TranscriptionConfig(speaker_labels=True, speakers_expected=3)
+        config = aai.TranscriptionConfig(speaker_labels=True)
         transcript = transcriber.transcribe(file_path, config)
 
         if transcript.status == aai.TranscriptStatus.error:

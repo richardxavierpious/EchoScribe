@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import './styles.css';
 import { jsPDF } from 'jspdf';
+import RecordingIndicator from './RecordingIndicator';
 
 function App() {
   const [conversation, setConversation] = useState('');
@@ -14,15 +15,53 @@ function App() {
   // Indicates which operation is loading: 'transcribing', 'executive', 'brief', or null.
   const [loadingOperation, setLoadingOperation] = useState(null);
 
+  // Recording state
+  const [recording, setRecording] = useState(false);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setAudioFile(file);
     setFileName(file ? file.name : '');
   };
 
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      audioChunksRef.current = [];
+      
+      mediaRecorderRef.current.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          audioChunksRef.current.push(e.data);
+        }
+      };
+
+      mediaRecorderRef.current.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const file = new File([audioBlob], 'recording.webm', { type: audioBlob.type });
+        setAudioFile(file);
+        setFileName(file.name);
+      };
+
+      mediaRecorderRef.current.start();
+      setRecording(true);
+    } catch (error) {
+      console.error('Error accessing microphone:', error);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      setRecording(false);
+    }
+  };
+
   const handleTranscribe = async () => {
     if (!audioFile) {
-      alert('Please select an audio file to transcribe.');
+      alert('Please select or record an audio file to transcribe.');
       return;
     }
     setLoadingOperation('transcribing');
@@ -91,7 +130,7 @@ function App() {
     if (audioFile) {
       setCurrentPage(2);
     } else {
-      alert('Please select an audio file first.');
+      alert('Please select or record an audio file first.');
     }
   };
   const goToSummary = () => {
@@ -179,9 +218,17 @@ function App() {
                 </div>
                 <h3>Record Audio</h3>
                 <p>Record audio directly using your microphone</p>
-                <button className="button record-button">
-                  Start Recording
-                </button>
+                {!recording ? (
+                  <button className="button record-button" onClick={startRecording}>
+                    Start Recording
+                  </button>
+                ) : (
+                  <button className="button record-button" onClick={stopRecording}>
+                    Stop Recording
+                  </button>
+                )}
+                {/* Recording indicator */}
+                <RecordingIndicator isRecording={recording} />
               </div>
             </div>
             
