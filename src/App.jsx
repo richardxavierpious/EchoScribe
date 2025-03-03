@@ -146,7 +146,7 @@ function App() {
       {/* Top Header - Present on all pages */}
       <header className="app-header">
         <div className="logo-container">
-        <img src="/echoscribelogo1.png" alt="EchoScribe Logo" className="logo" />
+        <img src="/echoscribelogo2.jpeg" alt="EchoScribe Logo" className="logo" />
         </div>
         
         {/* Navigation Tabs */}
@@ -378,7 +378,7 @@ function App() {
       {/* Footer - Present on all pages */}
       <footer className="app-footer">
         <div className="footer-logo">
-        <img src="/echoscribelogo1.png" alt="EchoScribe Logo" className="logo" />
+        <img src="/echoscribelogo2.jpeg" alt="EchoScribe Logo" className="logo" />
         
         </div>
         <div className="footer-links">
