@@ -77,8 +77,8 @@ function App() {
 
       const data = await response.json();
       setConversation(data.transcript);
-      // Automatically move to the summary page after transcription
-      setCurrentPage(3);
+      // Remove this line to prevent automatic navigation to summary page
+      // setCurrentPage(3);
     } catch (error) {
       console.error('Error:', error);
     } finally {

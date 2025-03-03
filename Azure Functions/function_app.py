@@ -40,7 +40,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         # Determine the prompt based on the summary type
         if summary_type == 'executive':
-            prompt = f"Provide an executive summary of the following text, emphasizing key findings, context, and actionable insights. Ensure clarity for decision-makers but avoid excessive detail, map the speakers to their respective names if possible to conclude from the given transcript ie replace for example Speaker A with the actual name. Response must not exceed 250 tokens.:\n\n{conversation}"
+            prompt = f"Provide an executive summary of the following text, emphasizing key findings, context, and actionable insights. Ensure clarity for decision-makers but avoid excessive detail, map the speakers to their respective names if possible to conclude from the given transcript ie replace for example Speaker A with the actual name.Do not explicitly mention that it is an executive summary Response must not exceed 250 tokens.:\n\n{conversation}"
         else:
             prompt = f"Summarize the following text in two to three sentences focusing only on the core idea. Keep it concise and to the point, avoiding unnecessary details. Response must not exceed 100 tokens:\n\n{conversation}"
 
