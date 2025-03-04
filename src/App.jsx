@@ -3,6 +3,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import './styles.css';
 import { jsPDF } from 'jspdf';
 import RecordingIndicator from './RecordingIndicator';
+import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
+
+const ffmpeg = createFFmpeg({ log: true });
 
 function App() {
   const [conversation, setConversation] = useState('');
@@ -28,7 +31,13 @@ function App() {
 
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          sampleRate: 44100,
+          channelCount: 2,
+          echoCancellation: true
+        }
+      });
       mediaRecorderRef.current = new MediaRecorder(stream);
       audioChunksRef.current = [];
       
@@ -38,11 +47,12 @@ function App() {
         }
       };
 
-      mediaRecorderRef.current.onstop = () => {
+      mediaRecorderRef.current.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        const file = new File([audioBlob], 'recording.webm', { type: audioBlob.type });
-        setAudioFile(file);
-        setFileName(file.name);
+        const webmFile = new File([audioBlob], 'recording.webm', { type: audioBlob.type });
+        const wavFile = await convertWebMtoWav(webmFile);
+        setAudioFile(wavFile);
+        setFileName(wavFile.name);
       };
 
       mediaRecorderRef.current.start();
@@ -390,5 +400,24 @@ function App() {
     </div>
   );
 }
+
+const convertWebMtoWav = async (webmFile) => {
+  if (!ffmpeg.isLoaded()) {
+    await ffmpeg.load();
+  }
+  
+  // Write the file to ffmpeg's virtual filesystem
+  ffmpeg.FS('writeFile', 'input.webm', await fetchFile(webmFile));
+  
+  // Run the conversion command
+  await ffmpeg.run('-i', 'input.webm', 'output.wav');
+  
+  // Read the result
+  const wavData = ffmpeg.FS('readFile', 'output.wav');
+  
+  // Create a blob/file from the output if needed
+  const wavBlob = new Blob([wavData.buffer], { type: 'audio/wav' });
+  return new File([wavBlob], 'recording.wav', { type: 'audio/wav' });
+};
 
 export default App;
