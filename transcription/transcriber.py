@@ -19,13 +19,23 @@ def transcribe():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
+    # Get the speaker count from the form data
+    speaker_count = request.form.get('speakerCount')
+    
     # Create a temporary directory
     with tempfile.TemporaryDirectory() as tmpdirname:
         file_path = os.path.join(tmpdirname, file.filename)
         file.save(file_path)
 
         transcriber = aai.Transcriber()
-        config = aai.TranscriptionConfig(speaker_labels=True)
+        
+        # If speaker count is provided, use it; otherwise, use speaker detection without a set count
+        if speaker_count and int(speaker_count) > 0:
+            config = aai.TranscriptionConfig(speaker_labels=True, speakers_expected=int(speaker_count))
+        else:
+            # Default to speaker detection without specifying a count
+            config = aai.TranscriptionConfig(speaker_labels=True)
+            
         transcript = transcriber.transcribe(file_path, config)
 
         if transcript.status == aai.TranscriptStatus.error:

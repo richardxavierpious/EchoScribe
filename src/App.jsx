@@ -11,6 +11,8 @@ function App() {
   const [audioFile, setAudioFile] = useState(null);
   const [fileName, setFileName] = useState('');
   const [currentPage, setCurrentPage] = useState(1); // 1: Upload, 2: Transcribe, 3: Summary
+  const [speakerCount, setSpeakerCount] = useState(2); // Default to 2 speakers
+  const [useAutomaticSpeakerDetection, setUseAutomaticSpeakerDetection] = useState(true); // For upload feature
 
   // Indicates which operation is loading: 'transcribing', 'executive', 'brief', or null.
   const [loadingOperation, setLoadingOperation] = useState(null);
@@ -27,6 +29,14 @@ function App() {
   };
 
   const startRecording = async () => {
+    if (speakerCount < 1) {
+      alert('Please enter a valid number of speakers (minimum 1)');
+      return;
+    }
+    
+    // When recording, we'll always use the manually specified speaker count
+    setUseAutomaticSpeakerDetection(false);
+    
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
@@ -67,6 +77,11 @@ function App() {
     setLoadingOperation('transcribing');
     const formData = new FormData();
     formData.append('file', audioFile);
+    
+    // Send the speaker count only if automatic detection is not enabled
+    if (!useAutomaticSpeakerDetection) {
+      formData.append('speakerCount', speakerCount.toString());
+    }
 
     try {
       const response = await fetch('http://localhost:5000/transcribe', {
@@ -77,8 +92,6 @@ function App() {
 
       const data = await response.json();
       setConversation(data.transcript);
-      // Remove this line to prevent automatic navigation to summary page
-      // setCurrentPage(3);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -141,12 +154,25 @@ function App() {
     }
   };
 
+  // Handle speaker count change
+  const handleSpeakerCountChange = (e) => {
+    const count = parseInt(e.target.value);
+    if (!isNaN(count) && count > 0) {
+      setSpeakerCount(count);
+    }
+  };
+
+  // Toggle automatic speaker detection
+  const toggleSpeakerDetection = (e) => {
+    setUseAutomaticSpeakerDetection(e.target.checked);
+  };
+
   return (
     <div className="app">
       {/* Top Header - Present on all pages */}
       <header className="app-header">
         <div className="logo-container">
-        <img src="/echoscribelogo2.jpeg" alt="EchoScribe Logo" className="logo" />
+          <img src="/echoscribelogo2.jpeg" alt="EchoScribe Logo" className="logo" />
         </div>
         
         {/* Navigation Tabs */}
@@ -184,51 +210,111 @@ function App() {
             </p>
             
             <div className="upload-options">
+              {/* UPLOAD CARD - Restructured */}
               <div className="upload-card">
-                <div className="card-icon">
-                  <span className="material-icon">📁</span>
-                </div>
-                <h3>Upload Audio File</h3>
-                <p>Select an audio file from your device</p>
-                <input
-                  type="file"
-                  accept="audio/*"
-                  onChange={handleFileChange}
-                  id="fileInput"
-                  style={{ display: 'none' }}
-                />
-                <label htmlFor="fileInput" className="button browse-button">
-                  Select File
-                </label>
-                {fileName && (
-                  <div className="selected-file">
-                    <span className="file-label">Selected:</span>
-                    <span className="file-name-display">{fileName}</span>
+                <div className="upload-card-content">
+                  <div className="card-icon">
+                    <span className="material-icon">📁</span>
                   </div>
-                )}
+                  <h3>Upload Audio File</h3>
+                  <p>Select an audio file from your device</p>
+                </div>
+                
+                <div className="upload-card-actions">
+                  <input
+                    type="file"
+                    accept="audio/*"
+                    onChange={handleFileChange}
+                    id="fileInput"
+                    style={{ display: 'none' }}
+                  />
+                  <label htmlFor="fileInput" className="button browse-button">
+                    Select File
+                  </label>
+                  {fileName && (
+                    <div className="selected-file">
+                      <span className="file-label">Selected:</span>
+                      <span className="file-name-display">{fileName}</span>
+                    </div>
+                  )}
+                  
+                  {/* Speaker detection checkbox for uploaded files */}
+                  {fileName && (
+                    <div className="speaker-detection-option">
+                      <input
+                        id="automaticDetection"
+                        type="checkbox"
+                        checked={useAutomaticSpeakerDetection}
+                        onChange={toggleSpeakerDetection}
+                      />
+                      <label htmlFor="automaticDetection">
+                        Use automatic speaker detection
+                      </label>
+                    </div>
+                  )}
+                  
+                  {/* Show speaker count input if automatic detection is disabled */}
+                  {fileName && !useAutomaticSpeakerDetection && (
+                    <div className="speaker-count-container">
+                      <label htmlFor="uploadSpeakerCount" className="speaker-count-label">
+                        Number of Speakers:
+                      </label>
+                      <input
+                        id="uploadSpeakerCount"
+                        type="number"
+                        min="1"
+                        value={speakerCount}
+                        onChange={handleSpeakerCountChange}
+                        className="speaker-count-input"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
               
               <div className="divider">
                 <span>OR</span>
               </div>
               
+              {/* RECORD CARD - Restructured */}
               <div className="upload-card">
-                <div className="card-icon">
-                  <span className="material-icon">🎙️</span>
+                <div className="upload-card-content">
+                  <div className="card-icon">
+                    <span className="material-icon">🎙️</span>
+                  </div>
+                  <h3>Record Audio</h3>
+                  <p>Record audio directly using your microphone</p>
                 </div>
-                <h3>Record Audio</h3>
-                <p>Record audio directly using your microphone</p>
-                {!recording ? (
-                  <button className="button record-button" onClick={startRecording}>
-                    Start Recording
-                  </button>
-                ) : (
-                  <button className="button record-button" onClick={stopRecording}>
-                    Stop Recording
-                  </button>
-                )}
-                {/* Recording indicator */}
-                <RecordingIndicator isRecording={recording} />
+                
+                <div className="upload-card-actions">
+                  {/* Speaker count input */}
+                  <div className="speaker-count-container">
+                    <label htmlFor="speakerCount" className="speaker-count-label">
+                      Number of Speakers:
+                    </label>
+                    <input
+                      id="speakerCount"
+                      type="number"
+                      min="1"
+                      value={speakerCount}
+                      onChange={handleSpeakerCountChange}
+                      className="speaker-count-input"
+                    />
+                  </div>
+                  
+                  {!recording ? (
+                    <button className="button record-button" onClick={startRecording}>
+                      Start Recording
+                    </button>
+                  ) : (
+                    <button className="button record-button" onClick={stopRecording}>
+                      Stop Recording
+                    </button>
+                  )}
+                  
+                  {/* Recording indicator */}
+                  <RecordingIndicator isRecording={recording} />
+                </div>
               </div>
             </div>
             
@@ -255,6 +341,16 @@ function App() {
             <div className="file-info">
               <span className="file-info-label">Selected file:</span>
               <span className="file-info-name">{fileName}</span>
+              {!useAutomaticSpeakerDetection && (
+                <span className="speaker-info">
+                  {" | "} Speakers: {speakerCount}
+                </span>
+              )}
+              {useAutomaticSpeakerDetection && (
+                <span className="speaker-info">
+                  {" | "} Using automatic speaker detection
+                </span>
+              )}
             </div>
             
             <div className="transcription-container">
@@ -378,8 +474,7 @@ function App() {
       {/* Footer - Present on all pages */}
       <footer className="app-footer">
         <div className="footer-logo">
-        <img src="/echoscribelogo2.jpeg" alt="EchoScribe Logo" className="logo" />
-        
+          <img src="/echoscribelogo2.jpeg" alt="EchoScribe Logo" className="logo" />
         </div>
         <div className="footer-links">
           <a href="#">Contact Info</a>

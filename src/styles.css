@@ -123,11 +123,12 @@ body {
 /* ===== PAGE 1: UPLOAD ===== */
 .upload-options {
   display: flex;
-  align-items: center;
+  align-items: stretch; /* Changed from center to stretch */
   gap: 40px;
   margin-bottom: 40px;
 }
 
+/* Updated upload card with new structure */
 .upload-card {
   flex: 1;
   background: white;
@@ -140,11 +141,33 @@ body {
   text-align: center;
   transition: var(--transition);
   border: 1px solid var(--border-color);
+  min-height: 450px; /* Fixed height for both cards */
+  justify-content: space-between; /* Space between content and actions */
 }
 
 .upload-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* New classes for card structure */
+.upload-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: center;
+  width: 100%;
+}
+
+.upload-card-actions {
+  margin-top: auto;
+  width: 100%;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
 
 .card-icon {
@@ -191,6 +214,7 @@ body {
   display: flex;
   align-items: center;
   flex-direction: column;
+  justify-content: center; /* Center vertically */
 }
 
 .divider span {
@@ -462,6 +486,80 @@ body {
   color: var(--primary-color);
 }
 
+/* Recording indicator styles */
+.recording-indicator {
+  margin-top: 10px;
+  text-align: center;
+  width: 100%;
+}
+
+.recording-bar {
+  width: 100%;
+  height: 4px;
+  background-color: red;
+  animation: pulse 1s infinite;
+  margin-bottom: 5px;
+}
+
+.recording-timer {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.speaker-count-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  justify-content: center;
+  width: 100%;
+}
+
+.speaker-count-label {
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+.speaker-count-input {
+  width: 60px;
+  padding: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.speaker-info {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.speaker-info-label {
+  margin-right: 10px;
+}
+
+.speaker-count-input-small {
+  width: 50px;
+  padding: 4px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* Optional: pulse animation for the bar */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 992px) {
   .app-header {
@@ -530,6 +628,46 @@ body {
 .recording-timer {
   font-size: 0.9rem;
   font-weight: bold;
+}
+
+.speaker-count-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  justify-content: center;
+}
+
+.speaker-count-label {
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+.speaker-count-input {
+  width: 60px;
+  padding: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.speaker-info {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.speaker-info-label {
+  margin-right: 10px;
+}
+
+.speaker-count-input-small {
+  width: 50px;
+  padding: 4px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  text-align: center;
+  font-size: 13px;
 }
 
 /* Optional: pulse animation for the bar */
